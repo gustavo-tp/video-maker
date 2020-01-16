@@ -1,0 +1,5 @@
+git checkout -b user-input
+npm init
+git add -A
+git commit -m 'feat: add package.json'
+npm install readline-sync
