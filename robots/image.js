@@ -7,6 +7,7 @@ const googleSearchCredentials = require('../credentials/google-search.json');
 
 async function robot() {
   const content = state.load();
+  const searchTermWords = content.searchTerm.split(' ');
 
   await fetchImagesOfAllSentences(content);
   await dowloadAllImages(content);
@@ -15,7 +16,14 @@ async function robot() {
 
   async function fetchImagesOfAllSentences(content) {
     for (const sentence of content.sentences) {
-      const query = `${content.searchTerm} ${sentence.keywords[0]}`;
+      const separatedKeywords = sentence.keywords[0].split(' ');
+      const separatedKeywordsFiltered = separatedKeywords.filter(
+        keyword => !searchTermWords.includes(keyword)
+      );
+
+      const keywords = separatedKeywordsFiltered.join(' ');
+
+      const query = `${content.searchTerm} ${keywords}`;
       sentence.images = await fetchGoogleAndReturnImagesLinks(query);
 
       sentence.googleSearchQuery = query;
