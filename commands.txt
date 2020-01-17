@@ -4,3 +4,4 @@ npm i sbd
 npm i watson-developer-cloud
 npm i googleapis
 npm i image-downloader
+npm i gm
