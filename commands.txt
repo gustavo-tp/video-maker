@@ -1,5 +1,6 @@
-npm install readline-sync
+npm i readline-sync
 npm i algorithmia
 npm i sbd
 npm i watson-developer-cloud
 npm i googleapis
+npm i image-downloader
