@@ -5,3 +5,8 @@ npm i watson-developer-cloud
 npm i googleapis
 npm i image-downloader
 npm i gm
+npm i videoshow
+npm i fluent-ffmpeg
+npm i @ffprobe-installer/ffprobe
+npm i @ffmpeg-installer/ffmpeg
+npm i express
