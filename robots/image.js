@@ -6,8 +6,9 @@ const state = require('./state.js');
 const googleSearchCredentials = require('../credentials/google-search.json');
 
 async function robot() {
+  console.log('> [image-robot] Starting...');
   const content = state.load();
-  const searchTermWords = content.searchTerm.split(' ');
+  // const searchTermWords = content.searchTerm.split(' ');
 
   await fetchImagesOfAllSentences(content);
   await dowloadAllImages(content);
@@ -15,18 +16,34 @@ async function robot() {
   state.save(content);
 
   async function fetchImagesOfAllSentences(content) {
-    for (const sentence of content.sentences) {
-      const separatedKeywords = sentence.keywords[0].split(' ');
-      const separatedKeywordsFiltered = separatedKeywords.filter(
-        keyword => !searchTermWords.includes(keyword)
-      );
+    for (
+      let sentenceIndex = 0;
+      sentenceIndex < content.sentences.length;
+      sentenceIndex++
+    ) {
+      let query;
 
-      const keywords = separatedKeywordsFiltered.join(' ');
+      // const separatedKeywords = content.sentences[
+      //   sentenceIndex
+      // ].keywords[0].split(' ');
+      // const separatedKeywordsFiltered = separatedKeywords.filter(
+      //   keyword => !searchTermWords.includes(keyword)
+      // );
 
-      const query = `${content.searchTerm} ${keywords}`;
-      sentence.images = await fetchGoogleAndReturnImagesLinks(query);
+      // const keywords = separatedKeywordsFiltered.join(' ');
+      const keywords = content.sentences[sentenceIndex].keywords[0];
 
-      sentence.googleSearchQuery = query;
+      if (sentenceIndex === 0) {
+        query = content.searchTerm;
+      } else {
+        query = `${content.searchTerm} ${keywords}`;
+      }
+      console.log(`> [image-robot] Querying Google Images with: "${query}"`);
+
+      content.sentences[
+        sentenceIndex
+      ].images = await fetchGoogleAndReturnImagesLinks(query);
+      content.sentences[sentenceIndex].googleSearchQuery = query;
     }
   }
 
@@ -61,18 +78,18 @@ async function robot() {
 
         try {
           if (content.downloadedImages.includes(imageUrl)) {
-            throw new Error('Imagem já foi baixada');
+            throw new Error('> [image-robot] Image already downloaded');
           }
 
           await dowloadAndSave(imageUrl, `${sentenceIndex}-original.png`);
           content.downloadedImages.push(imageUrl);
           console.log(
-            `> [${sentenceIndex}][${imageIndex}] Baixou imagem com sucesso: ${imageUrl}`
+            `> [image-robot]  [${sentenceIndex}][${imageIndex}] Image successfully downloaded: ${imageUrl}`
           );
           break;
         } catch (error) {
           console.log(
-            `> [${sentenceIndex}][${imageIndex}] Erro ao baixar (${imageUrl}): ${error}`
+            `> [image-robot]  [${sentenceIndex}][${imageIndex}] Error (${imageUrl}): ${error}`
           );
         }
       }

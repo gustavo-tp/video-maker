@@ -15,16 +15,17 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 async function robot() {
+  console.log('> [video-robot] Starting...');
   const content = state.load();
 
-  // await convertAllImages(content);
+  await convertAllImages(content);
   // await createAllSentenceImages(content);
-  // await createYouTubeThumbnail();
-  // await createAfterEffectsScript(content);
+  await createYouTubeThumbnail();
+  await createAfterEffectsScript(content);
   // await renderVideoWithAfterEffects();
   await renderVideoWithFfmpeg(content);
 
-  // state.save(content);
+  state.save(content);
 
   async function convertAllImages(content) {
     for (
@@ -241,6 +242,8 @@ async function robot() {
           MarginV: '40'
         }
       };
+
+      console.log('> [video-robot] Starting FFmpeg');
 
       videoshow(images, videoOptions)
         .audio('./templates/1/newsroom.mp3')
